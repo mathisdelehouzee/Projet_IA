@@ -16,23 +16,27 @@ from Acheteur import Acheteur
 
 
 if __name__ == '__main__':
-    agents = list()
-    port = int(argv[1])
-    #cela est le code pour démarrer le vendeur num 1 :
-    vendeur_1 = Vendeur_1(AID(name='vendeur_1@localhost:{}'.format(port)))
-    agents.append(vendeur_1)
-    print("Agent vendeur 1 créé ")
-    vendeur_2 = Vendeur_2(AID(name='vendeur_2@localhost:{}'.format(port)))
-    agents.append(vendeur_2)
-    print("Agent vendeur 2 créé ")
-    vendeur_3 = Vendeur_3(AID(name='vendeur_3@localhost:{}'.format(port)))
-    agents.append(vendeur_3)
-    print("Agent vendeur 3 créé ")
-    courtier = Courtier(AID(name='courtier@localhost:{}'.format(port)))
-    agents.append(courtier)
-    print("Agent courtier créé ")
-    acheteur = Acheteur(AID(name='acheteur@localhost:{}'.format(port)))
-    agents.append(acheteur)
-    print("Agent acheteur créé ")
+        agents = list()
+        port = int(argv[1])
+        #cela est le code pour démarrer le vendeur num 1 :
+        vendeur_1 = Vendeur_1(AID(name='vendeur_1@localhost:{}'.format(port)))
+        agents.append(vendeur_1)
+        port += 1
+        print("Agent vendeur 1 créé ")
+        vendeur_2 = Vendeur_2(AID(name='vendeur_2@localhost:{}'.format(port)))
+        agents.append(vendeur_2)
+        port += 1
+        print("Agent vendeur 2 créé ")
+        vendeur_3 = Vendeur_3(AID(name='vendeur_3@localhost:{}'.format(port)))
+        agents.append(vendeur_3)
+        port += 1
+        print("Agent vendeur 3 créé ")
+        courtier = Courtier(AID(name='courtier@localhost:{}'.format(port)))
+        agents.append(courtier)
+        port += 1
+        print("Agent courtier créé ")
+        acheteur = Acheteur(AID(name='acheteur@localhost:{}'.format(port)))
+        agents.append(acheteur)
+        print("Agent acheteur créé ")
 
-    start_loop(agents)
+        start_loop(agents)
