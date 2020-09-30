@@ -21,13 +21,18 @@ if __name__ == '__main__':
     #cela est le code pour démarrer le vendeur num 1 :
     vendeur_1 = Vendeur_1(AID(name='vendeur_1@localhost:{}'.format(port)))
     agents.append(vendeur_1)
-    print("Attention !!! : créé d'abord vos agents ")
-    #donnez de la même façon le code pour le démarrage de vendeur num 2 avec le nom local vendeur_2
-
-    #donnez de la même façon le code pour le démarrage du vendeur num 3 avec le nom local vendeur_3
-
-    #donnez de la même façon le code pour le démarrage de l'agent courtier avec le nom local courtier
-
-    #donnez de la même façon le code pour le démarrage de l'agent acheteur avec le nom local acheteur
+    print("Agent vendeur 1 créé ")
+    vendeur_2 = Vendeur_2(AID(name='vendeur_2@localhost:{}'.format(port)))
+    agents.append(vendeur_2)
+    print("Agent vendeur 2 créé ")
+    vendeur_3 = Vendeur_3(AID(name='vendeur_3@localhost:{}'.format(port)))
+    agents.append(vendeur_3)
+    print("Agent vendeur 3 créé ")
+    courtier = Courtier(AID(name='courtier@localhost:{}'.format(port)))
+    agents.append(courtier)
+    print("Agent courtier créé ")
+    acheteur = Acheteur(AID(name='acheteur@localhost:{}'.format(port)))
+    agents.append(acheteur)
+    print("Agent acheteur créé ")
 
     start_loop(agents)
