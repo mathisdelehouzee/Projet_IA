@@ -122,8 +122,8 @@ class Courtier(Agent):
          if message.performative==perVend and message.ontology== ontoVend:
             display_message(self.aid.localname, 'Courtier !! : Message recu de : {}'.format(message.sender.name))
             '''
-                puisque l'offre des vendeurs est aussi un objet, il faut passer par pickle pour déchiffrer le message.
-                initialiser les deux variables globales pieceR (Piece recu) et prix, et avantage
+                puisque l'offre des vendeurs est aussi un objet, il faut passer par pickle pour déchiffrer le message. 
+                initialiser les deux variables globales pieceR (Piece recu) et prix, et avantage 
                 -->insperez vous de l'exemple ci-dessus pour déchiffrer le message
                 -->Afficher la pièce de l'offre, son prix et l'avantage réçus en 3 instructions
                 '''
@@ -148,16 +148,25 @@ class Courtier(Agent):
                         if Courtier.nbrpro>1:
                             if Courtier.listPrix[0]>Courtier.listPrix[1]:
                                 Courtier.IdBestVendeur = Courtier.LesVendeurs[1]
+                                Courtier.PrixFinal=Courtier.listPrix[1]
                             else:
                                 Courtier.IdBestVendeur = Courtier.LesVendeurs[0]
-
-                            print ("***** la meilleur offre est de ", '''->*****''', " proposé par le vendeur : ",'''->*******''')
-
+                                Courtier.PrixFinal=Courtier.listPrix[0]
+                        
+                            print ("***** la meilleur offre est de ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
+    	         
                             '''contacter le bestVendeur en lui envoyant ACCEPT
                         -->
                         ...
                         -->
                             '''
+                            message=ACLMessage(ACLMessage.ACCEPT_PROPOSAL)
+                            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                            message.set_sender('courtier')
+                            message.add_receiver(AID(Courtier.IdBestVendeur))
+                            message.set_ontology('repProp')
+                            message.set_content('accept')
+                            self.send(message)
                             Courtier.decFinal =1
                         #contacter l'acheteur ici via call_latter après 20 secondes !!!
                             '''
@@ -165,24 +174,40 @@ class Courtier(Agent):
                             '''
                             print("\n")
                     #si la quantité demandé ne depasse pas 3 :
+                else:
+                     Courtier.PrixFinal = obR['prix']*Courtier.QuntD
+                     print("Aucune reduction n'est appliquée, prix final est : ",Courtier.PrixFinal)
+                     print("\n****** Cette propostion correspond à la demande *****")
+                     print ("\nNombre de propositions similaires est ", Courtier.nbrpro)
+                     print("\nEnvoie de ACCEPT_PROPOSAL")
+                     if Courtier.nbrpro>1:
+                        if Courtier.listPrix[0]>Courtier.listPrix[1]:
+                            Courtier.IdBestVendeur = Courtier.LesVendeurs[1]
+                            Courtier.PrixFinal=Courtier.listPrix[1]
                         else:
-                            Courtier.PrixFinal = obR['prix']*Courtier.QuntD
-                            print("Aucune reduction n'est appliquée, prix final est : ",'''****''')
-                            print("\n****** Cette propostion correspond à la demande *****")
-                            print ("\nNombre de propositions similaires est ", '''****''')
-                            print("\nEnvoie de ACCEPT_PROPOSAL")
+                            Courtier.IdBestVendeur = Courtier.LesVendeurs[0]
+                            Courtier.PrixFinal=Courtier.listPrix[0]
+                        print ("***** la meilleur offre est de ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
     	        #même au cas où y a pas de réduction de prix, de même qu'au dessus, il faut chercher le bestPrix et le BestVendeur en répetant exactement les même instructions que dans le if précidant
-                        '''contacter le bestVendeur en lui envoyant ACCEPT
+                     '''contacter le bestVendeur en lui envoyant ACCEPT
                         -->
                         ...
                         -->
-                        '''
-                #Si l'offre ne correspond pas à la demande
-                else:
-                        print("\n!!!!!!!!! Cette propostion ne correspond pas à la demande !!!!!!" )
-                        '''contacter le vendeur "AID(message.sender.localname)" en lui envoyant un message de REJECT_PROPOSAL
-                    -->
-                    ...
-                    -->
-                        '''
-                        print("\n!!!!!!!!! Cette propostion ne correspond pas à la demande !!!!!!" )
+                     '''
+                     message=ACLMessage(ACLMessage.ACCEPT_PROPOSAL)
+                     message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                     message.set_sender('courtier')
+                     message.add_receiver(AID(Courtier.IdBestVendeur))
+                     message.set_ontology('repProp')
+                     message.set_content('accept')
+                     self.send(message)
+                                                #Si l'offre ne correspond pas à la demande
+            else:
+                print("\n!!!!!!!!! Cette propostion ne correspond pas à la demande !!!!!!" )
+                message=ACLMessage(ACLMessage.REJECT_PROPOSAL)
+                message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                message.set_sender('courtier')
+                message.add_receiver(AID('vendeur_1'))
+                message.set_ontology('repProp')
+                message.set_content('Reject')
+                self.send(message)
