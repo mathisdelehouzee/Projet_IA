@@ -122,8 +122,8 @@ class Courtier(Agent):
          if message.performative==perVend and message.ontology== ontoVend:
             display_message(self.aid.localname, 'Courtier !! : Message recu de : {}'.format(message.sender.name))
             '''
-                puisque l'offre des vendeurs est aussi un objet, il faut passer par pickle pour déchiffrer le message. 
-                initialiser les deux variables globales pieceR (Piece recu) et prix, et avantage 
+                puisque l'offre des vendeurs est aussi un objet, il faut passer par pickle pour déchiffrer le message.
+                initialiser les deux variables globales pieceR (Piece recu) et prix, et avantage
                 -->insperez vous de l'exemple ci-dessus pour déchiffrer le message
                 -->Afficher la pièce de l'offre, son prix et l'avantage réçus en 3 instructions
                 '''
@@ -150,9 +150,9 @@ class Courtier(Agent):
                                 Courtier.IdBestVendeur = Courtier.LesVendeurs[1]
                             else:
                                 Courtier.IdBestVendeur = Courtier.LesVendeurs[0]
-                        
+
                             print ("***** la meilleur offre est de ", '''->*****''', " proposé par le vendeur : ",'''->*******''')
-    	         
+
                             '''contacter le bestVendeur en lui envoyant ACCEPT
                         -->
                         ...

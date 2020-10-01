@@ -49,3 +49,4 @@ class Vendeur_1(Agent):
                 print("Vendeur_1 : Tentative de vente acceptée - RAVIS\n \n")
                 #gérer le stock ici
                 #Vendeur_1.stock-=1
+
