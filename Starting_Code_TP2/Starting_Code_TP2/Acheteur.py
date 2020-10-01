@@ -22,12 +22,11 @@ class Acheteur(Agent):
                     '''
                     message = ACLMessage(ACLMessage.INFORM)
                     message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-                    message.set_sender(AID('fournisseur'))
                     #donner l'agent expediteur (acheteur) et l'agent recepteur (courtier) (code en 2 instructions)
                     message.set_sender(AID('acheteur')) #fournisseur: nom de l’agent expéditeur
                     message.add_receiver(AID('courtier')) 
                     #donner à votre message une ontologie "cmdacheteur"
-                    message.set_ontology('cmdacheteur')
+                    message.set_ontology("cmdacheteur")
                     '''
                     Le contenu à envoyer est présenté par un objet {piece, quantité}  
                     la fonction pickle de python permet d'englober cette objet et de l'envoyer facilement avec message.set_content
@@ -38,6 +37,7 @@ class Acheteur(Agent):
                     '''
                     --> acter l'envoie du message
                     '''
+                    display_message(self.aid.localname, "Acheteur : Envoie d'une commande au  : Fait")
                     self.send(message)
 
         def react(self, message):
