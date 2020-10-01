@@ -20,7 +20,7 @@ class Acheteur(Agent):
                     display_message(self.aid.localname, "Acheteur : Envoie d'une commande au courtier")
                     '''#definir un message de type REQUEST avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions)
                     '''
-                    message = ACLMessage(ACLMessage.INFORM)
+                    message = ACLMessage(ACLMessage.REQUEST)
                     message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
                     #donner l'agent expediteur (acheteur) et l'agent recepteur (courtier) (code en 2 instructions)
                     message.set_sender(AID('acheteur')) #fournisseur: nom de l’agent expéditeur

@@ -25,7 +25,7 @@ class Courtier(Agent):
 	def contact_vend1(self):
 		print ("contact vendeur N° 1 en cours ... ")
 		'''#definir un message de type CFP avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions) '''
-		message = ACLMessage(ACLMessage.INFORM)
+		message = ACLMessage(ACLMessage.CFP)
 		message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
 		'''#donner l'agent expediteur (courtier) et l'agent recepteur (vendeur_1) (code en 2 instructions)'''
 		message.set_sender(AID('courtier')) 
@@ -37,7 +37,7 @@ class Courtier(Agent):
 	def contact_vend2(self):
 		print ("contact vendeur N° 2 en cours ... ")
 		'''#definir un message de type CFP avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions)'''
-		message=ACLMessage(ACLMessage.INFORM)
+		message=ACLMessage(ACLMessage.CFP)
 		message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
 		'''#donner l'agent expediteur (courtier) et l'agent recepteur (vendeur_2) (code en 2 instructions)'''
 		message.set_sender('courtier')
@@ -49,7 +49,7 @@ class Courtier(Agent):
 	def contact_vend3(self):
 		print ("contact vendeur N° 3 en cours ... ")
 		'''#definir un message de type CFP avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions) '''
-		message=ACLMessage(ACLMessage.INFORM)
+		message=ACLMessage(ACLMessage.CFP)
 		message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
             
 		'''#donner l'agent expediteur (courtier) et l'agent recepteur (vendeur_3) (code en 2 instructions)'''
@@ -91,7 +91,7 @@ class Courtier(Agent):
          ontoVend="piecePropose" #ontologie des messages envoyés par les vendeurs
          super(Courtier, self).react(message)
     #Si un message est reçu d'un acheteur : 
-         if message.ontology==ontocmd:
+         if message.performative==percmd and message.ontology==ontocmd:
             display_message(self.aid.localname, 'Courtier !! : Message recu de : {}'.format(message.sender.name))
             '''
                 puisque la commande du client est un objet, il faut passer par pickle pour déchiffrer le message. 
