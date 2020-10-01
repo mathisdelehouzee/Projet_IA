@@ -119,21 +119,23 @@ class Courtier(Agent):
             call_later(8.0,self.contact_vend2)
             call_later(11.0,self.contact_vend3)
     #Si un message est reçu d'un vendeur : 
-            if message.performative==perVend and message.ontology== ontoVend:
-                display_message(self.aid.localname, 'Courtier !! : Message recu de : {}'.format(message.sender.name))
-                '''
+         if message.performative==perVend and message.ontology== ontoVend:
+            display_message(self.aid.localname, 'Courtier !! : Message recu de : {}'.format(message.sender.name))
+            '''
                 puisque l'offre des vendeurs est aussi un objet, il faut passer par pickle pour déchiffrer le message. 
                 initialiser les deux variables globales pieceR (Piece recu) et prix, et avantage 
                 -->insperez vous de l'exemple ci-dessus pour déchiffrer le message
                 -->Afficher la pièce de l'offre, son prix et l'avantage réçus en 3 instructions
-                '''     
+                '''
+            pieceR = message.content
+            obR = pickle.loads(pieceR)
                 #Si pièce demandé correspond à la pièce de l'offre :
-                if Courtier.CMDR==obR['piece']:
+            if Courtier.CMDR==obR['piece']:
                     #il faut compter combier de fois l'offre est similaire à la demande (à chaque réception du message)
-                    Courtier.nbrpro +=1
+                Courtier.nbrpro +=1
 
                     #une reduction selon l'avantage envoyé de  chaque vendeur s'applique sur le prix total si la quantité demandé dépasse 3.
-                    if Courtier.QuntD >=3:
+                if Courtier.QuntD >=3:
                         Courtier.PrixFinal= '''****calcul du nouveau prix****'''
                         Courtier.listPrix.append(Courtier.PrixFinal) #sotocker les prix
                         Courtier.LesVendeurs.append(message.sender.localname) #stocker les vendeurs pour que les indices des listes prix et vendeurs soient correspondantes
@@ -176,7 +178,7 @@ class Courtier(Agent):
                         -->
                         '''
                 #Si l'offre ne correspond pas à la demande
-                    else:
+                else:
                         print("\n!!!!!!!!! Cette propostion ne correspond pas à la demande !!!!!!" )
                         '''contacter le vendeur "AID(message.sender.localname)" en lui envoyant un message de REJECT_PROPOSAL
                     -->
