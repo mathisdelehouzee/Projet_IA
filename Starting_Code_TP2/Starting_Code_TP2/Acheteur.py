@@ -46,4 +46,8 @@ class Acheteur(Agent):
                     perNotOK="reject-proposal" #perNotOk indique un message avec performative reject-proposal (achat not ok)
                     super(Acheteur, self).react(message)
                     '''via deux instruction if, gérer les conditions d'un achat terminé avec succès ou l'inverse '''
+                    if message.ontology==onto and message.performative==perOK :
+                        print('Yes, je peux acheter')
+                    if message.ontology==onto and message.performative==perNotOK:
+                        print("Bande d'incapables, vousn'avez pas réussi à trouver ce que je voulais")
                    

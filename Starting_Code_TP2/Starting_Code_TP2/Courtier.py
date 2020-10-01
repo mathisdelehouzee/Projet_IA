@@ -59,29 +59,22 @@ class Courtier(Agent):
 		message.set_ontology('contactVend3')
 		message.set_content(Courtier.CMDR)
 		self.send(message)
-	def contact_Acheteur():
+
+	def contact_Acheteur(self):
 		print ("contact de Acheteur en cours ... ")
-            
 		if Courtier.decFinal==0:
-			'''#definir un message de type REJECT_PROPOSAL avec un protocole FIPA_REQUEST_PROTOCOL et un contenu "pas d'offres trouvés" 
-                (code en 3 instructions)
-                -->
-                -->
-                -->
-			'''         
+			message=ACLMessage(ACLMessage.REJECT_PROPOSAL)
+			message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+			message.set_content("pas d'offres trouvées")
+
 		if Courtier.decFinal==1:
-			'''#definir un message de type AGREE avec un protocole FIPA_REQUEST_PROTOCOL et un contenu "Meilleure offre trouvé" 
-                (code en 3 instructions)
-                -->
-                -->
-                -->
-			'''
-			'''Actez l'envoie du message à l'acheteur avec une ontologie decision
-            -->
-            -->
-            -->
-            -->
-			'''
+			message=ACLMessage(ACLMessage.AGREE)
+			message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+			message.set_content("Meilleure offre trouvée")
+		message.set_sender('courtier')
+		message.add_receiver('acheteur')
+		message.set_ontology('decision')
+		self.send(message)
 
     #l'agent couriter est en écoute permanent grâce à la fonction react ci-dessous :
 	def react(self, message):
@@ -121,6 +114,7 @@ class Courtier(Agent):
     #Si un message est reçu d'un vendeur : 
          if message.performative==perVend and message.ontology== ontoVend:
             display_message(self.aid.localname, 'Courtier !! : Message recu de : {}'.format(message.sender.name))
+            tempV=message.sender.name
             '''
                 puisque l'offre des vendeurs est aussi un objet, il faut passer par pickle pour déchiffrer le message. 
                 initialiser les deux variables globales pieceR (Piece recu) et prix, et avantage 
@@ -136,7 +130,7 @@ class Courtier(Agent):
 
                     #une reduction selon l'avantage envoyé de  chaque vendeur s'applique sur le prix total si la quantité demandé dépasse 3.
                 if Courtier.QuntD >=3:
-                        Courtier.PrixFinal= '''****calcul du nouveau prix****'''
+                        Courtier.PrixFinal= ((obR['prix']*(100-obR['avantage'])/100)*Courtier.QuntD)
                         Courtier.listPrix.append(Courtier.PrixFinal) #sotocker les prix
                         Courtier.LesVendeurs.append(message.sender.localname) #stocker les vendeurs pour que les indices des listes prix et vendeurs soient correspondantes
                         Courtier.IdBestVendeur = message.sender.localname #par défaut on suppose que ce vendeur est le meilleur
@@ -148,9 +142,11 @@ class Courtier(Agent):
                         if Courtier.nbrpro>1:
                             if Courtier.listPrix[0]>Courtier.listPrix[1]:
                                 Courtier.IdBestVendeur = Courtier.LesVendeurs[1]
+                                i=0
                                 Courtier.PrixFinal=Courtier.listPrix[1]
                             else:
                                 Courtier.IdBestVendeur = Courtier.LesVendeurs[0]
+                                i=1
                                 Courtier.PrixFinal=Courtier.listPrix[0]
                         
                             print ("***** la meilleur offre est de ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
@@ -167,11 +163,19 @@ class Courtier(Agent):
                             message.set_ontology('repProp')
                             message.set_content('accept')
                             self.send(message)
+                            message=ACLMessage(ACLMessage.REJECT_PROPOSAL)
+                            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                            message.set_sender('courtier')
+                            message.add_receiver(Courtier.LesVendeurs[i])
+                            message.set_ontology('repProp')
+                            message.set_content('Reject')
+                            self.send(message)
                             Courtier.decFinal =1
                         #contacter l'acheteur ici via call_latter après 20 secondes !!!
                             '''
                         -->
                             '''
+                            call_later(20.0,self.contact_Acheteur)
                             print("\n")
                     #si la quantité demandé ne depasse pas 3 :
                 else:
@@ -183,10 +187,12 @@ class Courtier(Agent):
                      if Courtier.nbrpro>1:
                         if Courtier.listPrix[0]>Courtier.listPrix[1]:
                             Courtier.IdBestVendeur = Courtier.LesVendeurs[1]
+                            i=0
                             Courtier.PrixFinal=Courtier.listPrix[1]
                         else:
                             Courtier.IdBestVendeur = Courtier.LesVendeurs[0]
                             Courtier.PrixFinal=Courtier.listPrix[0]
+                            i=1
                         print ("***** la meilleur offre est de ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
     	        #même au cas où y a pas de réduction de prix, de même qu'au dessus, il faut chercher le bestPrix et le BestVendeur en répetant exactement les même instructions que dans le if précidant
                      '''contacter le bestVendeur en lui envoyant ACCEPT
@@ -201,13 +207,21 @@ class Courtier(Agent):
                      message.set_ontology('repProp')
                      message.set_content('accept')
                      self.send(message)
+                     message=ACLMessage(ACLMessage.REJECT_PROPOSAL)
+                     message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                     message.set_sender('courtier')
+                     message.add_receiver(Courtier.LesVendeurs[i])
+                     message.set_ontology('repProp')
+                     message.set_content('Reject')
+                     self.send(message)
+                     call_later(20.0,self.contact_Acheteur)
                                                 #Si l'offre ne correspond pas à la demande
             else:
                 print("\n!!!!!!!!! Cette propostion ne correspond pas à la demande !!!!!!" )
                 message=ACLMessage(ACLMessage.REJECT_PROPOSAL)
                 message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
                 message.set_sender('courtier')
-                message.add_receiver(AID('vendeur_1'))
+                message.add_receiver(tempV)
                 message.set_ontology('repProp')
                 message.set_content('Reject')
                 self.send(message)

@@ -37,7 +37,7 @@ class Vendeur_1(Agent):
                 message.add_receiver(AID('courtier'))
                 #donner à votre message une ontologie "cmdacheteur"
                 message.set_ontology("piecePropose")
-                pieceV1={'piece':self.piece, 'prix' : self.prix, 'avantage' : self.avantage}
+                pieceV1={'piece':self.piece, 'prix' : self.prix, 'avantage' : self.avantage,'stock':self.stock}
                 obR=pickle.dumps(pieceV1)
                 message.set_content(obR)
                 self.send(message)
