@@ -39,3 +39,10 @@ class Vendeur_2(Agent):
                     obR=pickle.dumps(pieceV2)
                     message.set_content(obR)
                     self.send(message)
+            if message.performative==perReject:
+                print("Vendeur_2 : Tentative de vente refusée - peut être une autre fois\n")
+
+            if message.performative==perAccept:
+                print("Vendeur_2 : Tentative de vente acceptée - RAVIS\n \n")
+                            #gérer le stock ici
+                            #Vendeur_1.stock-=1
