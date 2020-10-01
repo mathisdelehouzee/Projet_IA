@@ -23,3 +23,13 @@ class Vendeur_3(Agent):
 
         def react(self, message):
           '''insperez vous de la classe Vendeur_1 pour donner les instructions du Vendeur_2 suite à la reception des messages de courtier'''
+            message = ACLMessage(ACLMessage.PROPOSE)
+            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+            message.set_sender(AID('vendeur_3'))
+            message.add_receiver(AID('courtier'))
+            #donner à votre message une ontologie "cmdacheteur"
+            message.set_ontology('piecePropose')
+            pieceV1={'prix' : prix, 'avantage' : avantage}
+            obD=pickle.dumps(pieceV1)
+            message.set_content(obD)
+            self.send(message)
