@@ -30,23 +30,17 @@ class Vendeur_1(Agent):
             #si le vendeur recoie une appel d'offre, il doit immediatement envoyer son offre à la veugle
             if message.performative==perCFP and message.ontology==ontoCFP:
                 print("Vendeur_1 : Commande recu Tentative de vente de la piece boite-vitesse en cours ...")
-                '''#definir un message de type REQUEST avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions)
-                -->
-                -->
-                '''
-            
-                '''#donner l'agent expediteur (vendeur_1) et l'agent recepteur (courtier) (code en 2 instructions)
-                -->
-                -->
-                '''
-                '''#donner à votre message une ontologie "piecePropose"
-                -->
-                '''
-                '''
-                Le contenu à envoyer est présenté par un objet {piece, prix, avantage}  
-                la fonction pickle de python permet d'englober cette objet et de l'envoyer facilement avec message.set_content
-    	 insperer vous de l'exemple dans la classe Acheteur
-                '''
+                #definir un message de type REQUEST avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions)
+                message = ACLMessage(ACLMessage.PROPOSE)
+                message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                message.set_sender(AID('vendeur_1'))
+                message.add_receiver(AID('courtier'))
+                #donner à votre message une ontologie "cmdacheteur"
+                message.set_ontology('piecePropose')
+                pieceV1={'prix' : prix, 'avantage' : avantage}
+                obD=pickle.dumps(pieceV1)
+                message.set_content(obD)
+                self.send(message)
 
             if message.performative==perReject:
                 print("Vendeur_1 : Tentative de vente refusée - peut être une autre fois\n")
