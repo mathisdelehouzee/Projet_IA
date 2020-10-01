@@ -14,6 +14,7 @@ class Vendeur_2(Agent):
         prix = 29.98
         stock =60
         avantage = 20
+
         def __init__(self, aid):
             super(Vendeur_2, self).__init__(aid=aid, debug=False)
         def on_start(self):
@@ -21,14 +22,20 @@ class Vendeur_2(Agent):
             display_message(self.aid.localname, "Demarrage de l'agent Vendeur_2 - reception des commandes en cours ...")
 
         def react(self, message):
-          '''insperez vous de la classe Vendeur_1 pour donner les instructions du Vendeur_2 suite à la reception des messages de courtier'''
-            message = ACLMessage(ACLMessage.PROPOSE)
-            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-            message.set_sender(AID('vendeur_2'))
-            message.add_receiver(AID('courtier'))
-            #donner à votre message une ontologie "cmdacheteur"
-            message.set_ontology('piecePropose')
-            pieceV1={'prix' : prix, 'avantage' : avantage}
-            obD=pickle.dumps(pieceV1)
-            message.set_content(obD)
-            self.send(message)
+            perCFP="cfp" #perCFP indique les message de type Call for proposal envoyé par le courtier
+            ontoCFP="contactVend2" #ontologie des messages envoyé par le courtier
+            perAccept="accept-proposal" #indique le type d'un message lorsque le courtier a accepter une proposition
+            perReject="reject-proposal" #indique l'inverse de accept-proposal ci-dessus
+            super(Vendeur_2, self).react(message)
+            if message.performative==perCFP and message.ontology==ontoCFP:
+                    print("Vendeur_2 : Commande recu Tentative de vente de la piece plaquettes en cours ...")
+                    message = ACLMessage(ACLMessage.PROPOSE)
+                    message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                    message.set_sender(AID('vendeur_2'))
+                    message.add_receiver(AID('courtier'))
+                    #donner à votre message une ontologie "cmdacheteur"
+                    message.set_ontology('piecePropose')
+                    pieceV2={'prix' : self.prix, 'avantage' : self.avantage}
+                    obD=pickle.dumps(pieceV2)
+                    message.set_content(obD)
+                    self.send(message)

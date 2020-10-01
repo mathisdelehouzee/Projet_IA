@@ -22,14 +22,20 @@ class Vendeur_3(Agent):
             display_message(self.aid.localname, "Demarrage de l'agent Vendeur_3 - reception des commandes en cours ...")
 
         def react(self, message):
-          '''insperez vous de la classe Vendeur_1 pour donner les instructions du Vendeur_2 suite à la reception des messages de courtier'''
-            message = ACLMessage(ACLMessage.PROPOSE)
-            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-            message.set_sender(AID('vendeur_3'))
-            message.add_receiver(AID('courtier'))
-            #donner à votre message une ontologie "cmdacheteur"
-            message.set_ontology('piecePropose')
-            pieceV1={'prix' : prix, 'avantage' : avantage}
-            obD=pickle.dumps(pieceV1)
-            message.set_content(obD)
-            self.send(message)
+             perCFP="cfp" #perCFP indique les message de type Call for proposal envoyé par le courtier
+             ontoCFP="contactVend3" #ontologie des messages envoyé par le courtier
+             perAccept="accept-proposal" #indique le type d'un message lorsque le courtier a accepter une proposition
+             perReject="reject-proposal" #indique l'inverse de accept-proposal ci-dessus
+             super(Vendeur_3, self).react(message)
+             if message.performative==perCFP and message.ontology==ontoCFP:
+                    print("Vendeur_3 : Commande recu Tentative de vente de la piece plaquettes en cours ...")
+                    message = ACLMessage(ACLMessage.PROPOSE)
+                    message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                    message.set_sender(AID('vendeur_3'))
+                    message.add_receiver(AID('courtier'))
+                    #donner à votre message une ontologie "cmdacheteur"
+                    message.set_ontology('piecePropose')
+                    pieceV3={'prix' : self.prix, 'avantage' : self.avantage}
+                    obD=pickle.dumps(pieceV3)
+                    message.set_content(obD)
+                    self.send(message)
