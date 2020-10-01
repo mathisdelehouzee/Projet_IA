@@ -177,7 +177,7 @@ class Courtier(Agent):
                             message.set_sender('courtier')
                             message.add_receiver(AID(message.sender.localname))
                             message.set_ontology('repProp')
-                            message.set_content()
+                            message.set_content('Accept')
                             self.send(message)
                             #Si l'offre ne correspond pas à la demande
                 else:
