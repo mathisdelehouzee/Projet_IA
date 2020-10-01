@@ -171,18 +171,22 @@ class Courtier(Agent):
                             print("\n****** Cette propostion correspond à la demande *****")
                             print ("\nNombre de propositions similaires est ", '''****''')
                             print("\nEnvoie de ACCEPT_PROPOSAL")
-    	        #même au cas où y a pas de réduction de prix, de même qu'au dessus, il faut chercher le bestPrix et le BestVendeur en répetant exactement les même instructions que dans le if précidant
-                        '''contacter le bestVendeur en lui envoyant ACCEPT
-                        -->
-                        ...
-                        -->
-                        '''
-                #Si l'offre ne correspond pas à la demande
+                            #même au cas où y a pas de réduction de prix, de même qu'au dessus, il faut chercher le bestPrix et le BestVendeur en répetant exactement les même instructions que dans le if précidant
+                            message=ACLMessage(ACLMessage.ACCEPT_PROPOSAL)
+                            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                            message.set_sender('courtier')
+                            message.add_receiver(AID(message.sender.localname))
+                            message.set_ontology('repProp')
+                            message.set_content()
+                            self.send(message)
+                            #Si l'offre ne correspond pas à la demande
                 else:
                         print("\n!!!!!!!!! Cette propostion ne correspond pas à la demande !!!!!!" )
-                        '''contacter le vendeur "AID(message.sender.localname)" en lui envoyant un message de REJECT_PROPOSAL
-                    -->
-                    ...
-                    -->
-                        '''
-                        print("\n!!!!!!!!! Cette propostion ne correspond pas à la demande !!!!!!" )
+
+                        message=ACLMessage(ACLMessage.REJECT_PROPOSAL)
+                        message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                        message.set_sender('courtier')
+                        message.add_receiver(AID(message.sender.localname))
+                        message.set_ontology('repProp')
+                        message.set_content('Reject')
+                        self.send(message)
