@@ -11,7 +11,7 @@ class Acheteur(Agent):
                     super(Acheteur, self).__init__(aid=aid, debug=False)
         def on_start(self):
                     super(Acheteur, self).on_start()
-                    display_message(self.aid.localname, "Demarrage de l'agent Acheteur - reception des notes en cours ...")
+                    display_message(self.aid.localname, "Demarrage de l'agent Acheteur")
                     #donner l'instruction permettant d'appeler la fonction sending_cmd après 8.0 secondes
                     call_later(8.0,self.sending_cmd)
 

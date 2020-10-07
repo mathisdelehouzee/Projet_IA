@@ -20,7 +20,7 @@ class Courtier(Agent):
 		super(Courtier, self).__init__(aid=aid, debug=False)
 	def on_start(self):
 		super(Courtier, self).on_start()
-		display_message(self.aid.localname, "Demarrage de l'agent Courtier - reception des notes en cours ...")
+		display_message(self.aid.localname, "Demarrage de l'agent Courtier")
     #donner la définition de la fonction contact_vend1 permettant de contacter le vendeur Num1 
 	def contact_vend1(self):
 		print ("contact vendeur N° 1 en cours ... ")
