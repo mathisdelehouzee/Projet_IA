@@ -23,17 +23,18 @@ class Courtier(Agent):
 		display_message(self.aid.localname, "Demarrage de l'agent Courtier")
     #donner la définition de la fonction contact_vend1 permettant de contacter le vendeur Num1 
 	def contact_vend1(self):
-		print ("contact vendeur N° 1 en cours ... ")
-		'''#definir un message de type CFP avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions) '''
-		message = ACLMessage(ACLMessage.CFP)
-		message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-		'''#donner l'agent expediteur (courtier) et l'agent recepteur (vendeur_1) (code en 2 instructions)'''
-		message.set_sender(AID('courtier')) 
-		message.add_receiver(AID('vendeur_1'))
-		'''#donner à votre message une ontologie "contactVend1" et un contenu Courtier.CMDR (initialsé à la réception d'une commande) et envoyer le message (code en 3 instructions)'''
-		message.set_ontology('contactVend1')
-		message.set_content(Courtier.CMDR)
-		self.send(message)
+            print ("contact vendeur N° 1 en cours ... ")
+            '''#definir un message de type CFP avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions) '''
+            message = ACLMessage(ACLMessage.CFP)
+            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+            '''#donner l'agent expediteur (courtier) et l'agent recepteur (vendeur_1) (code en 2 instructions)'''
+            message.set_sender(AID('courtier'))
+            message.add_receiver(AID('vendeur_1'))
+            '''#donner à votre message une ontologie "contactVend1" et un contenu Courtier.CMDR (initialsé à la réception d'une commande) et envoyer le message (code en 3 instructions)'''
+            message.set_ontology('contactVend1')
+            message.set_content(Courtier.QuntD)
+            self.send(message)
+
 	def contact_vend2(self):
 		print ("contact vendeur N° 2 en cours ... ")
 		'''#definir un message de type CFP avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions)'''
@@ -161,7 +162,7 @@ class Courtier(Agent):
                             message.set_sender('courtier')
                             message.add_receiver(AID(Courtier.IdBestVendeur))
                             message.set_ontology('repProp')
-                            message.set_content('accept')
+                            message.set_content(self.QuntD)
                             self.send(message)
                             message=ACLMessage(ACLMessage.REJECT_PROPOSAL)
                             message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)

@@ -14,6 +14,8 @@ class Vendeur_2(Agent):
         prix = 29.98
         stock =60
         avantage = 20
+        CMDR = ""
+        QuntD = 0
 
         def __init__(self, aid):
             super(Vendeur_2, self).__init__(aid=aid, debug=False)
@@ -28,21 +30,34 @@ class Vendeur_2(Agent):
             perReject="reject-proposal" #indique l'inverse de accept-proposal ci-dessus
             super(Vendeur_2, self).react(message)
             if message.performative==perCFP and message.ontology==ontoCFP:
-                    print("Vendeur_2 : Commande recu Tentative de vente de la piece plaquettes en cours ...")
-                    message = ACLMessage(ACLMessage.PROPOSE)
-                    message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-                    message.set_sender(AID('vendeur_2'))
-                    message.add_receiver(AID('courtier'))
-                    #donner à votre message une ontologie "cmdacheteur"
-                    message.set_ontology('piecePropose')
-                    pieceV2={'piece':self.piece,'prix' : self.prix, 'avantage' : self.avantage,'stock':self.stock}
-                    obR=pickle.dumps(pieceV2)
-                    message.set_content(obR)
-                    self.send(message)
+                    if self.stock > self.QuntD :
+                        print("Vendeur_2 : Commande recu Tentative de vente de la piece plaquettes en cours ...")
+                        message = ACLMessage(ACLMessage.PROPOSE)
+                        message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                        message.set_sender(AID('vendeur_2'))
+                        message.add_receiver(AID('courtier'))
+                        #donner à votre message une ontologie "cmdacheteur"
+                        message.set_ontology('piecePropose')
+                        pieceV2={'piece':self.piece,'prix' : self.prix, 'avantage' : self.avantage,'stock':self.stock}
+                        obR=pickle.dumps(pieceV2)
+                        message.set_content(obR)
+                        self.send(message)
+                    else :
+                        print("Vendeur_2 : Commande reçue mais malheureusement nous n'avons plus de stock...")
+                        message = ACLMessage(ACLMessage.PROPOSE)
+                        message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                        message.set_sender(AID('vendeur_2'))
+                        message.add_receiver(AID('courtier'))
+                        #donner à votre message une ontologie "cmdacheteur"
+                        message.set_ontology('piecePropose')
+                        pieceV2={'piece': "Neant",'prix' : self.prix, 'avantage' : self.avantage,'stock':self.stock}
+                        obR=pickle.dumps(pieceV2)
+                        message.set_content(obR)
+                        self.send(message)
             if message.performative==perReject:
                 print("Vendeur_2 : Tentative de vente refusée - peut être une autre fois\n")
 
             if message.performative==perAccept:
                 print("Vendeur_2 : Tentative de vente acceptée - RAVIS\n \n")
-                            #gérer le stock ici
-                            #Vendeur_1.stock-=1
+                self.stock -= message.content
+                print("Nouveau Stock du vendeur 2 : " , self.stock)
