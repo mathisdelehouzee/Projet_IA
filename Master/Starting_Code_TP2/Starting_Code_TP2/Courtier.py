@@ -8,6 +8,7 @@ from pade.acl.filters import Filter
 import pickle
 
 class Courtier(Agent):
+    temp_piece=""
 	CMDR = "" #variable qui va prendre la valeur de la csommande de l'acheteur
 	QuntD =0 #variable qui va prendre la valeur de la quantité demandé par l'acheteur
 	decFinal=0 #variable qui va verifier si la commande de l'acheteur correspond à l'un des meilleures offres de marchée
@@ -92,6 +93,7 @@ class Courtier(Agent):
                 initialiser les deux variables globales CMDR (commande recu) et QuntD (quantité demandé) 
                 comme suite :
             '''
+            Courtier.nbrpro=0
             pieceD = message.content
             obD = pickle.loads(pieceD)
             Courtier.CMDR = obD['piece']
@@ -109,10 +111,11 @@ class Courtier(Agent):
                 -->2ème appel après 8.0 secondes
                 -->3ème appel après 11.0 secondes
             '''
-            if self.IdBestVendeur=="" :
+            if self.temp_piece!= pieceD:
                 call_later(5.0,self.contact_vend1)
                 call_later(8.0,self.contact_vend2)
                 call_later(11.0,self.contact_vend3)
+
 
             else :
                 print("Nous connaissons déjà le meilleur vendeur, nous allons le contacter tout de suite")
@@ -139,6 +142,7 @@ class Courtier(Agent):
                 #Si pièce demandé correspond à la pièce de l'offre :
             #Courtier.nbrpro = 0
             if Courtier.CMDR==obR['piece']:
+                self.temp_piece=self.CMDR
                 #il faut compter combier de fois l'offre est similaire à la demande (à chaque réception du message)
 
                 Courtier.nbrpro +=1

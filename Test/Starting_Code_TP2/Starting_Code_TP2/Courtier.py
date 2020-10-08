@@ -8,6 +8,7 @@ from pade.acl.filters import Filter
 import pickle
 
 class Courtier(Agent):
+    temp_piece=""
 	CMDR = "" #variable qui va prendre la valeur de la csommande de l'acheteur
 	QuntD =0 #variable qui va prendre la valeur de la quantité demandé par l'acheteur
 	decFinal=0 #variable qui va verifier si la commande de l'acheteur correspond à l'un des meilleures offres de marchée
@@ -98,6 +99,7 @@ class Courtier(Agent):
                 initialiser les deux variables globales CMDR (commande recu) et QuntD (quantité demandé) 
                 comme suite :
             '''
+            self.nbrpro=0
             pieceD = message.content
             obD = pickle.loads(pieceD)
             Courtier.CMDR = obD['piece']
