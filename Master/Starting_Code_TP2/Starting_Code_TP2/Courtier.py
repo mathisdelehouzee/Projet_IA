@@ -84,7 +84,7 @@ class Courtier(Agent):
          perVend="propose" #type des messages envoyés par les vendeurs
          ontoVend="piecePropose" #ontologie des messages envoyés par les vendeurs
          super(Courtier, self).react(message)
-    #Si un message est reçu d'un acheteur : 
+        #Si un message est reçu d'un acheteur :
          if message.performative==percmd and message.ontology==ontocmd:
             display_message(self.aid.localname, 'Courtier !! : Message recu de : {}'.format(message.sender.name))
             '''
@@ -123,6 +123,7 @@ class Courtier(Agent):
                 message.set_ontology('repProp')
                 message.set_content(self.QuntD)
                 self.send(message)
+                call_later(60.0,self.contact_Acheteur)
 
         #Si un message est reçu d'un vendeur :
          if message.performative==perVend and message.ontology== ontoVend:
@@ -155,14 +156,14 @@ class Courtier(Agent):
 
                         #si il exisite plusieurs offres qui correspond à la demande il faut selectionner le meilleur prix et le meilleur vendeur
                         if Courtier.nbrpro>1:
-                            if Courtier.listPrix[0]>Courtier.listPrix[1]:
-                                Courtier.IdBestVendeur = Courtier.LesVendeurs[1]
-                                i=0
-                                Courtier.PrixFinal=Courtier.listPrix[1]
-                            else:
-                                Courtier.IdBestVendeur = Courtier.LesVendeurs[0]
-                                i=1
-                                Courtier.PrixFinal=Courtier.listPrix[0]
+                                if Courtier.listPrix[0]>Courtier.listPrix[1]:
+                                    Courtier.IdBestVendeur = Courtier.LesVendeurs[1]
+                                    i=0
+                                    Courtier.PrixFinal=Courtier.listPrix[1]
+                                else:
+                                    Courtier.IdBestVendeur = Courtier.LesVendeurs[0]
+                                    i=1
+                                    Courtier.PrixFinal=Courtier.listPrix[0]
 
                             print ("***** la meilleur offre est de ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
 
