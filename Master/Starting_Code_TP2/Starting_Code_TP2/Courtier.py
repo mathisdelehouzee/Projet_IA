@@ -109,10 +109,22 @@ class Courtier(Agent):
                 -->2ème appel après 8.0 secondes
                 -->3ème appel après 11.0 secondes
             '''
-            call_later(5.0,self.contact_vend1)
-            call_later(8.0,self.contact_vend2)
-            call_later(11.0,self.contact_vend3)
-    #Si un message est reçu d'un vendeur : 
+            if self.IdBestVendeur=="" :
+                call_later(5.0,self.contact_vend1)
+                call_later(8.0,self.contact_vend2)
+                call_later(11.0,self.contact_vend3)
+
+            else :
+                print("Nous connaissons déjà le meilleur vendeur, nous allons le contacter tout de suite")
+                message=ACLMessage(ACLMessage.ACCEPT_PROPOSAL)
+                message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                message.set_sender('courtier')
+                message.add_receiver(AID(Courtier.IdBestVendeur))
+                message.set_ontology('repProp')
+                message.set_content(self.QuntD)
+                self.send(message)
+
+        #Si un message est reçu d'un vendeur :
          if message.performative==perVend and message.ontology== ontoVend:
             display_message(self.aid.localname, 'Courtier !! : Message recu de : {}'.format(message.sender.name))
             tempV=message.sender.name
@@ -125,8 +137,10 @@ class Courtier(Agent):
             pieceR = message.content
             obR = pickle.loads(pieceR)
                 #Si pièce demandé correspond à la pièce de l'offre :
+            #Courtier.nbrpro = 0
             if Courtier.CMDR==obR['piece']:
-                    #il faut compter combier de fois l'offre est similaire à la demande (à chaque réception du message)
+                #il faut compter combier de fois l'offre est similaire à la demande (à chaque réception du message)
+
                 Courtier.nbrpro +=1
 
                     #une reduction selon l'avantage envoyé de  chaque vendeur s'applique sur le prix total si la quantité demandé dépasse 3.
@@ -149,9 +163,9 @@ class Courtier(Agent):
                                 Courtier.IdBestVendeur = Courtier.LesVendeurs[0]
                                 i=1
                                 Courtier.PrixFinal=Courtier.listPrix[0]
-                        
+
                             print ("***** la meilleur offre est de ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
-    	         
+
                             '''contacter le bestVendeur en lui envoyant ACCEPT
                         -->
                         ...
@@ -195,7 +209,7 @@ class Courtier(Agent):
                             Courtier.PrixFinal=Courtier.listPrix[0]
                             i=1
                         print ("***** la meilleur offre est de ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
-    	        #même au cas où y a pas de réduction de prix, de même qu'au dessus, il faut chercher le bestPrix et le BestVendeur en répetant exactement les même instructions que dans le if précidant
+                        #même au cas où y a pas de réduction de prix, de même qu'au dessus, il faut chercher le bestPrix et le BestVendeur en répetant exactement les même instructions que dans le if précidant
                      '''contacter le bestVendeur en lui envoyant ACCEPT
                         -->
                         ...
@@ -216,7 +230,8 @@ class Courtier(Agent):
                      message.set_content('Reject')
                      self.send(message)
                      call_later(20.0,self.contact_Acheteur)
-                                                #Si l'offre ne correspond pas à la demande
+                                             #Si l'offre ne correspond pas à la demande
+
             else:
                 print("\n!!!!!!!!! Cette propostion ne correspond pas à la demande !!!!!!" )
                 message=ACLMessage(ACLMessage.REJECT_PROPOSAL)
@@ -226,3 +241,4 @@ class Courtier(Agent):
                 message.set_ontology('repProp')
                 message.set_content('Reject')
                 self.send(message)
+

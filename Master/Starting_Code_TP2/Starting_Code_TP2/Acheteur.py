@@ -14,7 +14,7 @@ class Acheteur(Agent):
                     display_message(self.aid.localname, "Demarrage de l'agent Acheteur")
                     #donner l'instruction permettant d'appeler la fonction sending_cmd après 8.0 secondes
                     call_later(8.0,self.sending_cmd)
-
+                    call_later(50.0,self.sending_cmd)
         def sending_cmd(self):
                     CMD = "plaquettes"
                     display_message(self.aid.localname, "Acheteur : Envoie d'une commande au courtier")
