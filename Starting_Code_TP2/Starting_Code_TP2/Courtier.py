@@ -23,17 +23,20 @@ class Courtier(Agent):
 		display_message(self.aid.localname, "Demarrage de l'agent Courtier")
     #donner la définition de la fonction contact_vend1 permettant de contacter le vendeur Num1 
 	def contact_vend1(self):
-		print ("contact vendeur N° 1 en cours ... ")
-		'''#definir un message de type CFP avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions) '''
-		message = ACLMessage(ACLMessage.CFP)
-		message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-		'''#donner l'agent expediteur (courtier) et l'agent recepteur (vendeur_1) (code en 2 instructions)'''
-		message.set_sender(AID('courtier')) 
-		message.add_receiver(AID('vendeur_1'))
-		'''#donner à votre message une ontologie "contactVend1" et un contenu Courtier.CMDR (initialsé à la réception d'une commande) et envoyer le message (code en 3 instructions)'''
-		message.set_ontology('contactVend1')
-		message.set_content(Courtier.CMDR)
-		self.send(message)
+            print ("contact vendeur N° 1 en cours ... ")
+            '''#definir un message de type CFP avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions) '''
+            message = ACLMessage(ACLMessage.CFP)
+            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+            '''#donner l'agent expediteur (courtier) et l'agent recepteur (vendeur_1) (code en 2 instructions)'''
+            message.set_sender(AID('courtier'))
+            message.add_receiver(AID('vendeur_1'))
+            '''#donner à votre message une ontologie "contactVend1" et un contenu Courtier.CMDR (initialsé à la réception d'une commande) et envoyer le message (code en 3 instructions)'''
+            message.set_ontology('contactVend1')
+            pieceD={'piece' : self.CMDR, 'quantitie' : self.QuntD}
+            obD=pickle.dumps(pieceD)
+            message.set_content(obD)
+            self.send(message)
+
 	def contact_vend2(self):
 		print ("contact vendeur N° 2 en cours ... ")
 		'''#definir un message de type CFP avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions)'''
@@ -63,18 +66,22 @@ class Courtier(Agent):
 	def contact_Acheteur(self):
 		print ("contact de Acheteur en cours ... ")
 		if Courtier.decFinal==0:
-			message=ACLMessage(ACLMessage.REJECT_PROPOSAL)
-			message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-			message.set_content("pas d'offres trouvées")
+                    message=ACLMessage(ACLMessage.REJECT_PROPOSAL)
+                    message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                    message.set_content("pas d'offres trouvées")
+                    message.set_sender('courtier')
+                    message.add_receiver('acheteur')
+                    message.set_ontology('decision')
+                    self.send(message)
 
 		if Courtier.decFinal==1:
-			message=ACLMessage(ACLMessage.AGREE)
-			message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-			message.set_content("Meilleure offre trouvée")
-		message.set_sender('courtier')
-		message.add_receiver('acheteur')
-		message.set_ontology('decision')
-		self.send(message)
+                    message=ACLMessage(ACLMessage.AGREE)
+                    message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                    message.set_content("Meilleure offre trouvée")
+                    message.set_sender('courtier')
+                    message.add_receiver('acheteur')
+                    message.set_ontology('decision')
+                    self.send(message)
 
     #l'agent couriter est en écoute permanent grâce à la fonction react ci-dessous :
 	def react(self, message):
@@ -100,7 +107,7 @@ class Courtier(Agent):
             '''
 
             print("\nLa commande recu de l'acheteur est : ", Courtier.CMDR)
-            print("La quantitie demande est : ",Courtier.QuntD)
+            print("La quantite demande est : ",Courtier.QuntD)
             print("Contact des vendeurs en cours ...\n")
             '''
                 en 3 instructions, utilisez call_latter pour contacter les vendeur1, vendeur2 et vendeur3 (appel des fonctions ci-dessus)
@@ -151,11 +158,7 @@ class Courtier(Agent):
                         
                             print ("***** la meilleur offre est de ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
     	         
-                            '''contacter le bestVendeur en lui envoyant ACCEPT
-                        -->
-                        ...
-                        -->
-                            '''
+
                             message=ACLMessage(ACLMessage.ACCEPT_PROPOSAL)
                             message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
                             message.set_sender('courtier')
@@ -171,12 +174,14 @@ class Courtier(Agent):
                             message.set_content('Reject')
                             self.send(message)
                             Courtier.decFinal =1
-                        #contacter l'acheteur ici via call_latter après 20 secondes !!!
-                            '''
-                        -->
-                            '''
+                            #contacter l'acheteur ici via call_latter après 20 secondes !!!
+
                             call_later(20.0,self.contact_Acheteur)
                             print("\n")
+                        else :
+                            call_later(20.0,self.contact_Acheteur)
+                            print("\n")
+
                     #si la quantité demandé ne depasse pas 3 :
                 else:
                      Courtier.PrixFinal = obR['prix']*Courtier.QuntD
@@ -195,11 +200,7 @@ class Courtier(Agent):
                             i=1
                         print ("***** la meilleur offre est de ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
     	        #même au cas où y a pas de réduction de prix, de même qu'au dessus, il faut chercher le bestPrix et le BestVendeur en répetant exactement les même instructions que dans le if précidant
-                     '''contacter le bestVendeur en lui envoyant ACCEPT
-                        -->
-                        ...
-                        -->
-                     '''
+
                      message=ACLMessage(ACLMessage.ACCEPT_PROPOSAL)
                      message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
                      message.set_sender('courtier')

@@ -12,8 +12,9 @@ class Vendeur_1(Agent):
         #(la décision de la réduction sera prise par le courtier)
         piece = "boite-vitesse"
         prix = 38.98
-        stock =50
+        stock =2
         avantage=25
+        QuntD = 0
         def __init__(self, aid):
             super(Vendeur_1, self).__init__(aid=aid, debug=False)
         def on_start(self):
@@ -28,25 +29,62 @@ class Vendeur_1(Agent):
             perReject="reject-proposal" #indique l'inverse de accept-proposal ci-dessus
             super(Vendeur_1, self).react(message)
             #si le vendeur recoie une appel d'offre, il doit immediatement envoyer son offre à la veugle
+
             if message.performative==perCFP and message.ontology==ontoCFP:
-                print("Vendeur_1 : Commande recu Tentative de vente de la piece boite-vitesse en cours ...")
-                #definir un message de type REQUEST avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions)
-                message = ACLMessage(ACLMessage.PROPOSE)
-                message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-                message.set_sender(AID('vendeur_1'))
-                message.add_receiver(AID('courtier'))
-                #donner à votre message une ontologie "cmdacheteur"
-                message.set_ontology("piecePropose")
-                pieceV1={'piece':self.piece, 'prix' : self.prix, 'avantage' : self.avantage,'stock':self.stock}
-                obR=pickle.dumps(pieceV1)
-                message.set_content(obR)
-                self.send(message)
+                pieceD = message.content
+                obD = pickle.loads(pieceD)
+                Vendeur_1.CMDR = obD['piece']
+                Vendeur_1.QuntD = obD['quantitie']
+
+                #Chargement de la quantité dans une variable
+                if Vendeur_1.CMDR == self.piece :
+                        if self.stock >  self.QuntD :
+                            print("Vendeur_1 : Commande recu Tentative de vente de la piece boite-vitesse en cours ...")
+                            #definir un message de type REQUEST avec un protocole FIPA_REQUEST_PROTOCOL (code en 2 instructions)
+                            message = ACLMessage(ACLMessage.PROPOSE)
+                            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                            message.set_sender(AID('vendeur_1'))
+                            message.add_receiver(AID('courtier'))
+                            #donner à votre message une ontologie "cmdacheteur"
+                            message.set_ontology("piecePropose")
+                            pieceV1={'piece':self.piece, 'prix' : self.prix, 'avantage' : self.avantage,'stock':self.stock}
+                            obR=pickle.dumps(pieceV1)
+                            message.set_content(obR)
+                            self.send(message)
+
+                        else :
+                            print("\nNous n'avons pas assez de stock désolé ... \n ")
+                            #Envoie d'un message pour dire que la proposition ne tient pas
+                            message = ACLMessage(ACLMessage.PROPOSE)
+                            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                            message.set_sender(AID('vendeur_1'))
+                            message.add_receiver(AID('courtier'))
+                            #donner à votre message une ontologie "cmdacheteur"
+                            message.set_ontology("piecePropose")
+                            pieceV1={'piece': 'Néant' ,'prix' : self.prix, 'avantage' : self.avantage,'stock':self.stock}
+                            obR=pickle.dumps(pieceV1)
+                            message.set_content(obR)
+                            self.send(message)
+
+                else :
+                            print("\nNous ne vendons pas la pièce que vous recherchez\n ")
+
+                            message = ACLMessage(ACLMessage.PROPOSE)
+                            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                            message.set_sender(AID('vendeur_1'))
+                            message.add_receiver(AID('courtier'))
+                            #donner à votre message une ontologie "cmdacheteur"
+                            message.set_ontology("piecePropose")
+                            pieceV1={'piece': 'Néant' ,'prix' : self.prix, 'avantage' : self.avantage,'stock':self.stock}
+                            obR=pickle.dumps(pieceV1)
+                            message.set_content(obR)
+                            self.send(message)
 
             if message.performative==perReject:
                 print("Vendeur_1 : Tentative de vente refusée - peut être une autre fois\n")
 
             if message.performative==perAccept:
                 print("Vendeur_1 : Tentative de vente acceptée - RAVIS\n \n")
-                #gérer le stock ici
-                #Vendeur_1.stock-=1
+                Vendeur_1.stock-=Vendeur_1.Quntd
+
 
