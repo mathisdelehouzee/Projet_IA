@@ -172,28 +172,29 @@ class Courtier(Agent):
                                                 Courtier.PrixFinal=Courtier.listPrix[0]
                                                 o+=1
 
-                            if o==Courtier.nbrpro-1 :
-                                print ("***** la meilleur offre est de ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
+                                            message=ACLMessage(ACLMessage.ACCEPT_PROPOSAL)
+                                            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                                            message.set_sender('courtier')
+                                            message.add_receiver(AID(Courtier.IdBestVendeur))
+                                            message.set_ontology('repProp')
+                                            message.set_content(self.QuntD)
+                                            self.send(message)
+                                            message=ACLMessage(ACLMessage.REJECT_PROPOSAL)
+                                            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                                            message.set_sender('courtier')
+                                            message.add_receiver(Courtier.LesVendeurs[i])
+                                            message.set_ontology('repProp')
+                                            message.set_content('Reject')
+                                            self.send(message)
+                                            Courtier.decFinal =1
+
+                                            call_later(20.0,self.contact_Acheteur)
+                                            print("\n")
+
+                                            print ("***** la meilleur offre est actuellement de  ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
 
 
-                            message=ACLMessage(ACLMessage.ACCEPT_PROPOSAL)
-                            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-                            message.set_sender('courtier')
-                            message.add_receiver(AID(Courtier.IdBestVendeur))
-                            message.set_ontology('repProp')
-                            message.set_content(self.QuntD)
-                            self.send(message)
-                            message=ACLMessage(ACLMessage.REJECT_PROPOSAL)
-                            message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-                            message.set_sender('courtier')
-                            message.add_receiver(Courtier.LesVendeurs[i])
-                            message.set_ontology('repProp')
-                            message.set_content('Reject')
-                            self.send(message)
-                            Courtier.decFinal =1
 
-                            call_later(20.0,self.contact_Acheteur)
-                            print("\n")
                             #si la quantité demandé ne depasse pas 3 :
                     else:
                          Courtier.PrixFinal = obR['prix']*Courtier.QuntD
@@ -210,7 +211,7 @@ class Courtier(Agent):
                                 Courtier.IdBestVendeur = Courtier.LesVendeurs[0]
                                 Courtier.PrixFinal=Courtier.listPrix[0]
                                 i=1
-                            print ("***** la meilleur offre est de ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
+                            print ("***** la meilleur offre est actuellement de  ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
                             #même au cas où y a pas de réduction de prix, de même qu'au dessus, il faut chercher le bestPrix et le BestVendeur en répetant exactement les même instructions que dans le if précidant
                          '''contacter le bestVendeur en lui envoyant ACCEPT
                             -->
