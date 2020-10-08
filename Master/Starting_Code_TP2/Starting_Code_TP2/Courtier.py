@@ -112,7 +112,7 @@ class Courtier(Agent):
                     -->2ème appel après 8.0 secondes
                     -->3ème appel après 11.0 secondes
                 '''
-                if self.temp_piece!= pieceD:
+                if self.temp_piece !=obD['piece']:
                     call_later(5.0,self.contact_vend1)
                     call_later(8.0,self.contact_vend2)
                     call_later(11.0,self.contact_vend3)
@@ -127,7 +127,7 @@ class Courtier(Agent):
                     message.set_ontology('repProp')
                     message.set_content(self.QuntD)
                     self.send(message)
-                    call_later(60.0,self.contact_Acheteur)
+                    call_later(50.0,self.contact_Acheteur)
 
             #Si un message est reçu d'un vendeur :
              if message.performative==perVend and message.ontology== ontoVend:
