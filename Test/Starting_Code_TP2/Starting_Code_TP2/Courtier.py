@@ -8,7 +8,9 @@ from pade.acl.filters import Filter
 import pickle
 
 class Courtier(Agent):
+    list_mark=['Ferrari','McLaren','Honda']
     temp_piece=""
+    Marque=""
 	CMDR = "" #variable qui va prendre la valeur de la csommande de l'acheteur
 	QuntD =0 #variable qui va prendre la valeur de la quantité demandé par l'acheteur
 	decFinal=0 #variable qui va verifier si la commande de l'acheteur correspond à l'un des meilleures offres de marchée
@@ -104,6 +106,7 @@ class Courtier(Agent):
             obD = pickle.loads(pieceD)
             Courtier.CMDR = obD['piece']
             Courtier.QuntD = obD['quantitie']
+            Courtier.Marque=obD['marque']
             '''
                 Affichage des information de la commande recu :  
             '''
@@ -117,6 +120,18 @@ class Courtier(Agent):
                 -->2ème appel après 8.0 secondes
                 -->3ème appel après 11.0 secondes
             '''
+            if Courtier.Marque!="":
+                u=0
+                for i in Courtier.list_mark:
+                    u+=1
+                    if i==Courtier.Marque:
+                        if u==1:
+                            call_later(5.0,self.contact_vend1)
+                        if u==2:
+                            call_later(5.0,self.contact_vend2)
+                        if u==3:
+                            call_later(5.0,self.contact_vend3)
+            else
             call_later(5.0,self.contact_vend1)
             call_later(8.0,self.contact_vend2)
             call_later(11.0,self.contact_vend3)
