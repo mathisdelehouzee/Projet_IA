@@ -107,11 +107,11 @@ class Courtier(Agent):
                 Courtier.QuntD = obD['quantitie']
                 Courtier.Marque = obD['marque']
                 '''
-                    Affichage des information de la commande recu :  
+                    Affichage des information de la commande reçue :  
                 '''
 
-                print("\nLa commande recu de l'acheteur est : ", Courtier.CMDR)
-                print("La quantitie demande est : ",Courtier.QuntD)
+                print("\nLa commande reçue de l'acheteur est : ", Courtier.CMDR)
+                print("La quantite demandee est : ",Courtier.QuntD)
                 print("Contact des vendeurs en cours ...\n")
                 '''
                     en 3 instructions, utilisez call_latter pour contacter les vendeur1, vendeur2 et vendeur3 (appel des fonctions ci-dessus)
@@ -137,22 +137,26 @@ class Courtier(Agent):
                                 call_later(5.0, self.contact_vend3)
                                 Courtier.LesVendeursNulls.append("vendeur_1")
                                 Courtier.LesVendeursNulls.append("vendeur_2")
-                if self.temp_piece!= obD['piece']:
-                    call_later(5.0,self.contact_vend1)
-                    call_later(8.0,self.contact_vend2)
-                    call_later(11.0,self.contact_vend3)
-
 
                 else :
-                    print("Nous connaissons déjà le meilleur vendeur, nous allons le contacter tout de suite")
-                    message=ACLMessage(ACLMessage.ACCEPT_PROPOSAL)
-                    message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-                    message.set_sender('courtier')
-                    message.add_receiver(AID(Courtier.IdBestVendeur))
-                    message.set_ontology('repProp')
-                    message.set_content(self.QuntD)
-                    self.send(message)
-                    call_later(60.0,self.contact_Acheteur)
+
+                    if self.temp_piece!= obD['piece']:
+                        call_later(5.0,self.contact_vend1)
+                        call_later(8.0,self.contact_vend2)
+                        call_later(11.0,self.contact_vend3)
+
+
+                    else :
+                        Courtier.decFinal=1
+                        print("Nous connaissons déjà le meilleur vendeur, nous allons le contacter tout de suite")
+                        message=ACLMessage(ACLMessage.ACCEPT_PROPOSAL)
+                        message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                        message.set_sender('courtier')
+                        message.add_receiver(AID(Courtier.IdBestVendeur))
+                        message.set_ontology('repProp')
+                        message.set_content(self.QuntD)
+                        self.send(message)
+                        call_later(40.0,self.contact_Acheteur)
 
             #Si un message est reçu d'un vendeur :
              if message.performative==perVend and message.ontology== ontoVend:
@@ -170,6 +174,7 @@ class Courtier(Agent):
                     #Si pièce demandé correspond à la pièce de l'offre :
                 #Courtier.nbrpro = 0
                 if Courtier.CMDR==obR['piece']:
+                    Courtier.decFinal=1
                     self.temp_piece=self.CMDR
                     #il faut compter combier de fois l'offre est similaire à la demande (à chaque réception du message)
 
@@ -229,7 +234,7 @@ class Courtier(Agent):
                                 Courtier.LesVendeurs.clear()
                                 Courtier.listPrix.append(Courtier.PrixFinal)
                                 Courtier.LesVendeurs.append(Courtier.IdBestVendeur)
-                            print ("***** la meilleur offre est de ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
+                            #print ("***** la meilleur offre est de ", Courtier.PrixFinal, " proposé par le vendeur : ",Courtier.IdBestVendeur)
                             #même au cas où y a pas de réduction de prix, de même qu'au dessus, il faut chercher le bestPrix et le BestVendeur en répetant exactement les même instructions que dans le if précidant
                          '''contacter le bestVendeur en lui envoyant ACCEPT
                             -->
@@ -257,13 +262,13 @@ class Courtier(Agent):
                     message.set_sender('courtier')
                     message.add_receiver(AID(Courtier.IdBestVendeur))
                     message.set_ontology('repProp')
-                    message.set_content('accept')
+                    message.set_content(self.QuntD)
                     self.send(message)
                     for i in Courtier.LesVendeursNulls:
                         message = ACLMessage(ACLMessage.REJECT_PROPOSAL)
                         message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
                         message.set_sender('courtier')
-                        message.add_receiver(Courtier.LesVendeurs[i])
+                        message.add_receiver(i)
                         message.set_ontology('repProp')
                         message.set_content('Reject')
                         self.send(message)

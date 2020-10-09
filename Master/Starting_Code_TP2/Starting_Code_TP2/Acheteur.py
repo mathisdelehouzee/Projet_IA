@@ -31,7 +31,7 @@ class Acheteur(Agent):
                     Le contenu à envoyer est présenté par un objet {piece, quantité, marque}  
                     la fonction pickle de python permet d'englober cette objet et de l'envoyer facilement avec message.set_content
                     '''
-                    pieceD={'piece' : "plaquettes", 'quantitie' : 3,'marque':''}
+                    pieceD={'piece' : "plaquettes", 'quantitie' : 3,'marque':''} #Pour que le courtier puisse prédire automatiquement le nom du vendeur, essayez de mettre McLaren entre les guillements ('marque' : 'McLaren)'
                     obD=pickle.dumps(pieceD)
                     message.set_content(obD)
                     '''
